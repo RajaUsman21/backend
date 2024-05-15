@@ -1,7 +1,9 @@
-import 'dotenv/config'
+import 'dotenv/config.js'
 import express from "express";
 import AllRouters from "./routes/index.js";
 import { connectDb } from "./db/config.js";
+import syncDB from './db/init.js';
+
 // import studentController from "./controller/student/index.js";
 
 // import teacherController from "./controller/teacher/index.js";
@@ -14,7 +16,10 @@ import { connectDb } from "./db/config.js";
 const app = express();
 app.use(express.json())
 connectDb()
-
+syncDB().then(()=> {
+  console.log("db started")
+  
+})
 // app.use(studentRouter);
 // app.use(TeacherRouter)
 // app.use(MarksRouter)

@@ -6,7 +6,8 @@ const dbHost=process.env.DB_HOST
 
 const sequelize = new Sequelize(dbName, dbUserName, dbPassword, {
   host: dbHost,
-  dialect:  'postgres'
+  dialect:  'postgres',
+  logging:console.log,
 });
 const connectDb= async()=>{
     try {
@@ -14,7 +15,7 @@ const connectDb= async()=>{
         console.log('Connection has been established successfully.');
       } catch (error) {
         console.error('Unable to connect to the database:', error);
-      }
+      } 
 }
 export {connectDb}
 export default sequelize
