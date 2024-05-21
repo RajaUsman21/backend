@@ -1,43 +1,73 @@
-const marks=[
-    {name:"usman", english:"71", grade:"B"},
-    {name:"usman",urdu:"35", grade:"F"},
-    {name:"usman",math:"76", grade:"B+"},
-    {name:"usman",chemistry:"50", grade:"D"},
-    {name:"usman",computer:"95", grade:"A+"},
-    {name:"usman",physics:"60", grade:"C+"}
-  ]
-  const MarksController={
-    getMarks:(req,res)=>{
-        res.json({marks})
-    },
-    postMarks:(req,res)=>{
-        const AddNewMarks=req.body
-        marks.push(AddNewMarks)
-        res.json({AddNewMarks,marks})
-    },
-    putMarks:(req,res)=>{
-        const id=req.params.id
-        const updateMarks=req.body
-        marks [id]=updateMarks;
-        res.json({updateMarks,marks})
+import MarksModel from "../../model/marks/index.js"
 
-    },
-    deleteMarks:(req,res)=>{
+  const MarksController={
+    getAllMarks: async (req, res) => {
         try {
-            const id= req.params.id;
-            const index = marks.findIndex(ele => ele.id === id);
-            
-            if (index !== -1) {
-                marks.splice(index, 1);
-                res.json({ message: "Marks deleted successfully",marks });
-            } else {
-                throw new Error("student marks not found");
-            }
+          const marks = await MarksModel.findAll({
+            // where: {
+            //   firstName: "usman",
+            // },
+            order: [["createdAt", "DESC"]],
+            limit: 5,
+          });
+          res.json({
+            data: marks,
+          });
         } catch (error) {
-            res.status(404).json({ error: error.message });
+          console.error("Error fetching Marks:", error);
+          res.status(500).json({ error: "Internal server error" });
         }
+      },
+    postMarks: async (req, res) => {
+        try {
+            const newMarks = req.body;
+            const marks= await MarksModel.create({
+              firstName:newMarks.firstName,
+              lastName:newMarks.lastName,
+              marks:newMarks.marks
+            });
+            res.status(200).json({message:"Marks Added",marks})
+        } catch (error) {
+            res.status(500).json({ error: "Failed to add Marks",});
+        }
+    
+    },
+
+
+
+        putMarks: async (req,res)=>{
+            try{
+                const {id}=req.params
+                const UpdatedMarks = req.body
+                const marks = await MarksModel.findByPk(id)
+                await marks.update({
+                    firstName: UpdatedMarks.firstName,
+                    lastName: UpdatedMarks.lastName,
+                    marks: UpdatedMarks.marks
+                })
+                res.status(200).json({ message: "Marks updated", UpdatedMarks: marks });
+    } catch (error) {
+      console.error("Error updating student:", error);
+      res.status(500).json({ error: "Failed to update Marks" });
     }
-  
+  },
+  deleteMarks: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const marks = await MarksModel.findByPk(id);
+      await marks.destroy();
+
+      res.status(200).json({ message: "Marks deleted",marks});
+    } catch (error) {
+      console.error("Error deleting student:", error);
+      res.status(500).json({ error: "Failed to delete Marks" });
     }
+  }
+};
     export default MarksController
+    
+  
+    
+   
   

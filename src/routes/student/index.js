@@ -11,6 +11,8 @@ const studentRouter=Router();
 //  put or update the data
    studentRouter.put("/student/:id",studentController.putStudent)
 
+   studentRouter.delete("/student/:id",studentController.deleteStudent)
+
 
   //  studentRouter.putUpdateStudent("/studentUpdate/:id",studentController.putUpdateStudent)
 

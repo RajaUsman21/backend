@@ -1,77 +1,84 @@
-const teachers=[
-    {name:"Sir Ali", id:"0",city:"lahore"},
-    {name:"Sir Mohsin", id:"1",city:"lahore"},
-    {name:"Sir Ahsan", id:"2",city:"Gujrat"},
-    {name:"Sir Ejaz", id:"3",city:"kotla"},
-    {name:"Sir Adeel", id:"4",city:"sialkot"},
-    {name:"Sir Mujtaba", id:"5",city:"Qasoor"}
-  ]
+import TeacherModel from "../../model/teacher/index.js"
+
 const teacherController={
-    getAllTeachers:(req,res)=>{
-        res.json(teachers)
-        
-      },
-    getSingleTeacher:(req,res)=>{
-        const id=req.params.id
-        const teacher=teachers.find(teacher=>teacher.id===id)
-        if(teacher){
-          res.json(teacher)
-        }else{
-          res.json({message:"teacher not found"})
+    getAllTeachers:async (req, res) => {
+      try {
+        const teachers = await TeacherModel.findAll({
+          order: [["createdAt", "DESC"]],
+          limit: 5,
+        });
+        res.json({
+          data: teachers,
+        });
+      } catch (error) {
+        console.error("Error fetching teacher:", error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    },
+  
+    getSingleTeacher:async (req, res) => {
+      try {
+        const { id } = req.params;
+        const teacher = await TeacherModel.findByPk(id);
+  
+        if (teacher) {
+          res.json({ message: "Teacher found", teacher });
+        } else {
+          res.status(404).json({ error: "teacher not found" });
         }
-        },
+      } catch (error) {
+        console.error("Error getting single teacher:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+    },
     
-    postTeacher: (req, res) => {
+    postTeacher: async (req, res) => {
       try {
           const newTeacher = req.body;
-          console.log('====================================');
-          console.log(req.body);
-          console.log('====================================');
-          teachers.push(newTeacher);
-          res.json({newTeacher,teachers});
+          const teacher= await TeacherModel.create({
+            firstName: newTeacher.firstName,
+            lastName: newTeacher.lastName,
+            phone: newTeacher.phone,
+          });
+          res.status(200).json({message:"Teacher created",teacher})
       } catch (error) {
           res.status(500).json({ error: "Failed to add teacher",});
       }
   
   },
-  putTeacher: (req, res) => {
+  putTeacher: async (req, res) => {
     try {
-        const id = req.params.id;
-        const updatedTeacher = req.body;
-        
-        // Update the teacher in the array
-        teachers[id] = updatedTeacher;
-        
-        // Respond with the updated teacher
-        res.json({updatedTeacher,teachers});
+      const { id } = req.params;
+      const updatedTeacher = req.body;
+
+      const existingTeacher = await TeacherModel.findByPk(id);
+      await existingTeacher.update({
+        firstName: updatedTeacher.firstName,
+        lastName: updatedTeacher.lastName,
+        phone: updatedTeacher.phone,
+      });
+
+      res.status(200).json({ message: "teacher updated", teacher: existingTeacher});
     } catch (error) {
-        res.status(500).json({ error: "Failed to update teacher" });
+      console.error("Error updating teacher:", error);
+      res.status(500).json({ error: "Failed to update teacher" });
     }
-},
-    
-    deleteTeacher:(req, res) => {
+  },
+
+    deleteTeacher:async (req, res) => {
       try {
-          const id = req.params.id;
-          
-          // Find the index of the teacher with the given ID in the array
-          const index = teachers.findIndex(teacher => teacher.id === id);
-          
-          if (index !== -1) {
-              // If teacher with given ID exists, remove them from the array using splice
-              teachers.splice(index, 1);
-              res.json({ message: "Teacher deleted successfully",teachers });
-          } else {
-              // If teacher with given ID does not exist, throw an error
-              throw new Error("Teacher not found");
-          }
+        const { id } = req.params;
+  
+        const Teacher = await TeacherModel.findByPk(id);
+      
+  
+        await Teacher.destroy();
+  
+        res.status(200).json({ message: "teacher deleted",Teacher});
       } catch (error) {
-          // If an error occurs, handle it and respond with an error message
-          res.status(404).json({ error: error.message });
+        console.error("Error deleting teacher:", error);
+        res.status(500).json({ error: "Failed to delete teacher" });
       }
-  }
-
-
-
-
-}
+    }
+  };
 export default teacherController;
