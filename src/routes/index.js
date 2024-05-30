@@ -1,5 +1,7 @@
+import authRouter from "./auth/index.js";
 import classRouter from "./class/index.js";
 import MarksRouter from "./marks/index.js";
+import categoryRouter from "./products/category.js";
 import ProductRouter from "./products/index.js";
 import salesRouter from "./sales/index.js";
 import studentRouter from "./student/index.js";
@@ -13,7 +15,9 @@ const AllRouters=[
     MarksRouter,
     classRouter,
     salesRouter,
+    categoryRouter,
     ProductRouter,
+    authRouter,
     WrongApiRouter
 ]
 export default AllRouters

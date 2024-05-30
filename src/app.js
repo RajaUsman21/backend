@@ -26,9 +26,11 @@ syncDB().then(()=> {
 // app.use(WrongApiRouter)
 // app.use(classRouter)
 
-
 app.use(AllRouters);
-  app.listen(3000, () => {
+
+
+
+app.listen(3000, () => {
     console.log("Server is again restarted:3000");
 });
 

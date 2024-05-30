@@ -1,6 +1,6 @@
 import SaleProductModel from "../../model/sales/salesProducts.js";
 // import ProductModel from "../../model/sales/index.js";
-import ProductModel from "../../model/sales/products.js";
+import ProductModel from "../../model/product/products.js";
 
 const ProductsController= {
     getAll: async (req, res) => {
@@ -14,6 +14,7 @@ const ProductsController= {
           data: products,
         });
       } catch (error) {
+        console.log(error)
         res.status(500).json({ message: "Internal server error", error });
       }
     },

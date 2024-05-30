@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../../db/config.js";
+import CategoryModel from "./category.js";
 
 const ProductModel = sequelize.define(
   "Product",
@@ -20,5 +21,7 @@ const ProductModel = sequelize.define(
   {}
 );
 
+ProductModel.belongsToMany(CategoryModel, { through: "categoryProducts" });
+CategoryModel.belongsToMany(ProductModel, { through: "categoryProducts" });
 
 export default ProductModel;
