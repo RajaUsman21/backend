@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../../db/config.js";
-import teacherModel from "../teacher/index.js";
+
 
 const userModel = sequelize.define("User", {
   // Model attributes are defined here
@@ -19,7 +19,7 @@ const userModel = sequelize.define("User", {
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false, 
   },
 });
 

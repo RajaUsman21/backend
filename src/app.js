@@ -3,6 +3,7 @@ import express from "express";
 import AllRouters from "./routes/index.js";
 import { connectDb } from "./db/config.js";
 import syncDB from './db/init.js';
+import main from './mail/index.js';
 
 // import studentController from "./controller/student/index.js";
 
@@ -28,7 +29,7 @@ syncDB().then(()=> {
 
 app.use(AllRouters);
 
-
+main()
 
 app.listen(3000, () => {
     console.log("Server is again restarted:3000");
